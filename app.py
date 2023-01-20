@@ -1,5 +1,4 @@
 import streamlit as st
-from streamlit_option_menu import option_menu
 from PIL import Image
 from bokeh.models.widgets import Div
 
@@ -44,27 +43,7 @@ with st.sidebar:
         div = Div(text=html)
         st.bokeh_chart(div)
 
-# st.markdown(
-#     f'''
-#         <style>
-#             .sidebar .sidebar-content {{
-#                 width: 5px;
-#             }}
-#         </style>
-#     ''',
-#     unsafe_allow_html=True
-# )
-# with st.sidebar:
-#     choose = option_menu("", ["HOME", "Photo Editing", "Project Planning", "Python e-Course", "Contact"],
-#                          icons=['house', 'github', 'kanban', 'book','person lines fill'],
-#                          menu_icon="app-indicator", default_index=0, orientation='vertical',
-#                          styles={
-#         "container": {"padding": "5!important", "background-color": "#ffffff"},
-#         "icon": {"color": "#ef4da0", "font-size": "25px"}, 
-#         "nav-link": {"font-size": "16px", "text-align": "left", "margin":"0px", "--hover-color": "#ffffff"},
-#         "nav-link-selected": {"background-color": "#ef4da0"},
-#     }
-#     )
+
 
 
 
@@ -123,10 +102,8 @@ st.write(
     """
 )
 
-c1, c2, c3 = st.columns(3)
+c1, c2 = st.columns(2)
 with c1:
-    st.info('**Data Analyst: [@AliTslm](https://twitter.com/AliTslm)**', icon="💡")
+    st.info('**Website: [Web](https://muarrikhyazka.github.io)**', icon="🍣")
 with c2:
-    st.info('**GitHub: [@alitaslimi](https://github.com/alitaslimi)**', icon="💻") 
-with c3:
-    st.info('**Data: [Flipside Crypto](https://flipsidecrypto.xyz)**', icon="🧠")
+    st.info('**GitHub: [muarrikhyazka](https://github.com/muarrikhyazka)**', icon="🍱") 
