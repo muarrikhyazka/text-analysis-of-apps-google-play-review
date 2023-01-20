@@ -91,7 +91,18 @@ st.write(
     """
 )
 
-st.subheader('Future Works')
+st.subheader('Method')
+st.write(
+    """
+    This tool is a work in progress and will continue to be developed moving forward. Adding other blockchains,
+    more KPIs and metrics, optimizing the code in general, enhancing the UI/UX of the tool, and more importantly,
+    improving the data pipeline by utilizing [**Flipside ShroomDK**](https://sdk.flipsidecrypto.xyz/shroomdk) are
+    among the top priorities for the development of this app. Feel free to share your feedback, suggestions, and
+    also critics with me.
+    """
+)
+
+st.subheader('Insights')
 st.write(
     """
     This tool is a work in progress and will continue to be developed moving forward. Adding other blockchains,
