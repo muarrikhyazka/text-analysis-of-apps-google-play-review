@@ -1,6 +1,9 @@
+import pandas as pd
 import streamlit as st
 from PIL import Image
 from bokeh.models.widgets import Div
+import plotly.express as px
+import nltk
 
 # Layout
 st.set_page_config(page_title='Muarrikh Yazka', page_icon='🖖', layout='wide')
@@ -34,7 +37,13 @@ with open(file_name) as f:
 
 
 # Content
+@st.cache
+def load_data():
+    df_raw = pd.read_csv(r'data/data-for-text-analysis-streamlit.csv', sep=';')
+    df = df_raw.copy()
+    return df_raw, df
 
+df_raw, df = load_data()
 
 with st.sidebar:
     if st.button('🏠 HOME'):
@@ -53,65 +62,82 @@ st.title('Text Analysis of Apps Google Play Review')
 st.subheader('Business Understanding')
 st.write(
     """
-    The crypto industry continues to progress and its development has never stopped. Contributors
-    of each blockchain keep developing each segment of the industry and the whole crypto ecosystem.
-    This tool is designed to allow viewers to journey into the world of crypto ecosystems of some
-    of the major blockchains, and compare their performance.
-    This tool is designed and structured in multiple **Pages** that are accessible using the sidebar.
-    Each of these Pages addresses a different segment of the crypto industry. Within each segment
-    (Macro, Transfers, Swaps, NFTs, etc.) you are able to filter your desired blockchains to
-    narrow/expand the comparison. By selecting a single blockchain, you can observe a deep dive
-    into that particular network.
-    All values for amounts, prices, and volumes are in **U.S. dollars** and the time frequency of the
-    analysis was limited to the last **30 days**.
+    Every apps in play store should get any comments, critics, suggestion from users. 
+    From there, we can know how our users think about the apps, so it can be a great way to evaluate the apps performance and what we can improve from the apps.
+    """
+)
+
+st.write(
+    """
+    I choose Netflix as the case because I have already known how is the bussiness and I am a user of Netflix.
     """
 )
 
 st.subheader('Data Understanding')
 st.write(
     """
-    The data for this cross-chain comparison were selected from the [**Flipside Crypto**](https://flipsidecrypto.xyz)
-    data platform by using its **REST API**. These queries are currently set to **re-run every 24 hours** to cover the latest
-    data and are imported as a JSON file directly to each page. The data were selected with a **1 day delay** for all
-    blockchains to be in sync with one another. The codes for this tool are saved and accessible in its 
-    [**GitHub Repository**](https://github.com/alitaslimi/cross-chain-monitoring).
-    It is worth mentioning that a considerable portion of the data used for this tool was manually decoded from the raw
-    transaction data on some of the blockchains. Besides that, the names of addresses, DEXs, collections, etc. are also
-    manually labeled. As the queries are updated on a daily basis to cover the most recent data, there is a chance
-    that viewers encounter inconsistent data through the app. Due to the heavy computational power required to execute
-    the queries, and also the size of the raw data being too large, it was not feasible to cover data for a longer period,
-    or by downloading the data and loading it from the repository itself. Therefore, the REST API was selected as the
-    proper form of loading data for the time being.
-    Besides the codes and queries mentioned above, the following dashboards created using Flipside Crypto were used
-    as the core references in developing the current tool:
-    - [Flipside World Cup: Gas Guzzlers](https://app.flipsidecrypto.com/dashboard/flipsides-world-cup-gas-guzzlers-iTcitG)
-    - [Flipside World Cup: USDC Transfers](https://app.flipsidecrypto.com/dashboard/flipside-world-cup-usdc-transfers-l-dWsf)
-    - [Flipside World Cup: NFT Sales](https://app.flipsidecrypto.com/dashboard/flipside-world-cup-nft-sales-lDvMLG)
-    - [Flipside World Cup: Cross Chain DeFi Monitoring](https://app.flipsidecrypto.com/dashboard/flipside-world-cup-cross-chain-de-fi-monitoring-bOY5ox)
+    **Source : Scrapping from Google Play.** You can see on my jupyter notebook in github to know how to get the data.
     """
 )
+
+st.write(
+    """
+    **Below is sample of the data.** 
+    """
+)
+
+st.dataframe(df[['reviewId', 'userName', 'userImage', 'content', 'score',
+       'thumbsUpCount', 'reviewCreatedVersion', 'at', 'replyContent',
+       'repliedAt']].head())
 
 st.subheader('Method')
 st.write(
     """
-    This tool is a work in progress and will continue to be developed moving forward. Adding other blockchains,
-    more KPIs and metrics, optimizing the code in general, enhancing the UI/UX of the tool, and more importantly,
-    improving the data pipeline by utilizing [**Flipside ShroomDK**](https://sdk.flipsidecrypto.xyz/shroomdk) are
-    among the top priorities for the development of this app. Feel free to share your feedback, suggestions, and
-    also critics with me.
+    Sentiment Classification : Using pre-trained model from ...
+    Category Classification : Using pre-trained model from ...
     """
 )
 
 st.subheader('Insights')
 st.write(
     """
-    This tool is a work in progress and will continue to be developed moving forward. Adding other blockchains,
-    more KPIs and metrics, optimizing the code in general, enhancing the UI/UX of the tool, and more importantly,
-    improving the data pipeline by utilizing [**Flipside ShroomDK**](https://sdk.flipsidecrypto.xyz/shroomdk) are
-    among the top priorities for the development of this app. Feel free to share your feedback, suggestions, and
-    also critics with me.
+    I calculate word frequency and see on top 10.
     """
 )
+
+## convert to corpus
+top=10
+corpus = df["content_clean"]
+lst_tokens = nltk.tokenize.word_tokenize(corpus.str.cat(sep=" "))
+
+    
+## calculate words unigrams
+dic_words_freq = nltk.FreqDist(lst_tokens)
+dtf_uni = pd.DataFrame(dic_words_freq.most_common(), 
+                       columns=["Word","Freq"])
+fig_uni = px.bar(dtf_uni.iloc[:top,:].sort_values(by="Freq"), x="Freq", y="Word", orientation='h',
+             hover_data=["Word", "Freq"],
+             height=400,
+             title='Unigram')
+st.plotly_chart(fig_uni, use_container_width=True)
+
+st.write(
+    """
+    In unigram, we can see some device or operating system were mentioned, such as tv, android and nexus. From here, we can know
+    """
+)
+    
+## calculate words bigrams
+dic_words_freq = nltk.FreqDist(nltk.ngrams(lst_tokens, 2))
+dtf_bi = pd.DataFrame(dic_words_freq.most_common(), 
+                      columns=["Word","Freq"])
+dtf_bi["Word"] = dtf_bi["Word"].apply(lambda x: " ".join(
+                   string for string in x) )
+fig_bi = px.bar(dtf_bi.iloc[:top,:].sort_values(by="Freq"), x="Freq", y="Word", orientation='h',
+             hover_data=["Word", "Freq"],
+             height=400,
+             title='Bigrams')
+st.plotly_chart(fig_bi, use_container_width=True)
 
 c1, c2 = st.columns(2)
 with c1:
