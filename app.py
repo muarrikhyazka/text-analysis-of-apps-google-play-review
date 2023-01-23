@@ -93,8 +93,8 @@ st.dataframe(df[['reviewId', 'userName', 'userImage', 'content', 'score',
 st.subheader('Method')
 st.write(
     """
-    Sentiment Classification : Using pre-trained model from ...
-    Category Classification : Using pre-trained model from ...
+    Sentiment Classification : Using pre-trained model from ... \n
+    Category Classification : Using pre-trained model from ... \n
     """
 )
 
