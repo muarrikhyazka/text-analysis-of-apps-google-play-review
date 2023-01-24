@@ -101,31 +101,15 @@ st.write(
 st.subheader('Insights')
 st.write(
     """
-    I calculate word frequency and see on top 10.
+    I calculated word frequency and see on top 10 in unigram and bigram. Try to see all chart combination between sentiment and category and will show you which has insight.
     """
 )
 
 ## convert to corpus
 top=10
-corpus = df["content_clean"]
+corpus = df["content_clean"][(df['sentiment']=='NEGATIVE') & (df['predicted_category']=='INTERFACE')]
 lst_tokens = nltk.tokenize.word_tokenize(corpus.str.cat(sep=" "))
 
-    
-## calculate words unigrams
-dic_words_freq = nltk.FreqDist(lst_tokens)
-dtf_uni = pd.DataFrame(dic_words_freq.most_common(), 
-                       columns=["Word","Freq"])
-fig_uni = px.bar(dtf_uni.iloc[:top,:].sort_values(by="Freq"), x="Freq", y="Word", orientation='h',
-             hover_data=["Word", "Freq"],
-             height=400,
-             title='Unigram')
-st.plotly_chart(fig_uni, use_container_width=True)
-
-st.write(
-    """
-    In unigram, we can see some device or operating system were mentioned, such as tv, android and nexus. From here, we can know
-    """
-)
     
 ## calculate words bigrams
 dic_words_freq = nltk.FreqDist(nltk.ngrams(lst_tokens, 2))
@@ -138,6 +122,13 @@ fig_bi = px.bar(dtf_bi.iloc[:top,:].sort_values(by="Freq"), x="Freq", y="Word", 
              height=400,
              title='Bigrams')
 st.plotly_chart(fig_bi, use_container_width=True)
+
+st.write("""
+    We can see here, its combination between negative sentiment and interface category. 
+    It shows us that interface in TV is needed to be improved because android tv was mentioned sometimes. 
+    Many other words which is related to TV such as mi Box (Xiaomi set top box for TV), dolby digital (sound in smart tv), and nvidia shield (android tv-based digital media player).
+    It indicates that Netflix should prioritize to improve their app in TV. 
+""")
 
 c1, c2 = st.columns(2)
 with c1:
