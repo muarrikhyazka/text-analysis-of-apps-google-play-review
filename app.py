@@ -4,9 +4,11 @@ from PIL import Image
 from bokeh.models.widgets import Div
 import plotly.express as px
 import nltk
+import graphviz
 
 # Layout
-st.set_page_config(page_title='Muarrikh Yazka', page_icon='🖖', layout='wide')
+# img = Image.open('')
+# st.set_page_config(page_title='Muarrikh Yazka', page_icon=img, layout='wide')
 
 
 
@@ -93,10 +95,26 @@ st.dataframe(df[['reviewId', 'userName', 'userImage', 'content', 'score',
 st.subheader('Method')
 st.write(
     """
-    Sentiment Classification : Using pre-trained model from ... \n
-    Category Classification : Using pre-trained model from ... \n
+    Sentiment Classification : Using pre-trained model from huggingface.co ([cardiffnlp/twitter-roberta-base-sentiment](https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment)) \n
+    Category Classification : Using pre-trained model from huggingface.co ([alperiox/autonlp-user-review-classification-536415182](https://huggingface.co/alperiox/autonlp-user-review-classification-536415182)) \n
     """
 )
+
+st.write("""
+    **Flowchart**
+""")
+
+graph = graphviz.Digraph()
+graph.edge('Data Scrapping', 'Text Preprocessing')
+graph.edge('Text Preprocessing', 'Category Prediction')
+graph.edge('Text Preprocessing', 'Sentiment Prediction')
+graph.edge('Category Prediction', 'Analysis')
+graph.edge('Sentiment Prediction', 'Analysis')
+
+
+st.graphviz_chart(graph)
+
+
 
 st.subheader('Insights')
 st.write(
@@ -120,7 +138,7 @@ dtf_bi["Word"] = dtf_bi["Word"].apply(lambda x: " ".join(
 fig_bi = px.bar(dtf_bi.iloc[:top,:].sort_values(by="Freq"), x="Freq", y="Word", orientation='h',
              hover_data=["Word", "Freq"],
              height=400,
-             title='Bigrams')
+             title='Top 10 Bigrams Text')
 st.plotly_chart(fig_bi, use_container_width=True)
 
 st.write("""
@@ -128,10 +146,11 @@ st.write("""
     It shows us that interface in TV is needed to be improved because android tv was mentioned sometimes. 
     Many other words which is related to TV such as mi Box (Xiaomi set top box for TV), dolby digital (sound in smart tv), and nvidia shield (android tv-based digital media player).
     It indicates that Netflix should prioritize to improve their app in TV. 
+    Furthermore, in detail many complaints for voice search feature, so It should be attention to start.
 """)
 
 c1, c2 = st.columns(2)
 with c1:
-    st.info('**Website: [Web](https://muarrikhyazka.github.io)**', icon="🍣")
+    st.info('**Website: [muarrikhyazka.github.io](https://muarrikhyazka.github.io)**', icon="🍣")
 with c2:
-    st.info('**GitHub: [muarrikhyazka](https://github.com/muarrikhyazka)**', icon="🍱") 
+    st.info('**GitHub: [github.com/muarrikhyazka](https://github.com/muarrikhyazka)**', icon="🍱") 
