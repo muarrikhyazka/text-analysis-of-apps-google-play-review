@@ -5,10 +5,18 @@ from bokeh.models.widgets import Div
 import plotly.express as px
 import nltk
 import graphviz
+import base64
+
+
+
+
+
+
 
 # Layout
-# img = Image.open('')
-# st.set_page_config(page_title='Muarrikh Yazka', page_icon=img, layout='wide')
+img = Image.open('assets/icon_pink-01.png')
+st.set_page_config(page_title='Muarrikh Yazka', page_icon=img, layout='wide')
+
 
 
 
@@ -17,6 +25,12 @@ import graphviz
 st.markdown(""" <style>
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+#   width: 50%;
+}
 </style> """, unsafe_allow_html=True)
 
 
@@ -47,12 +61,35 @@ def load_data():
 
 df_raw, df = load_data()
 
+def render_svg(svg):
+    """Renders the given svg string."""
+    b64 = base64.b64encode(svg.encode('utf-8')).decode("utf-8")
+    html = r'<img src="data:image/svg+xml;base64,%s" class="center" width="100" height="100"/>' % b64
+    st.write(html, unsafe_allow_html=True)
+
 with st.sidebar:
+    f = open("assets/icon-01.svg","r")
+    lines = f.readlines()
+    line_string=''.join(lines)
+
+    render_svg(line_string)
+
+    st.write('\n')
+    st.write('\n')
+    st.write('\n')
+
     if st.button('🏠 HOME'):
         js = "window.location.href = 'https://muarrikhyazka.github.io'"  # Current tab
         html = '<img src onerror="{}">'.format(js)
         div = Div(text=html)
         st.bokeh_chart(div)
+
+    if st.button('🍱 GITHUB'):
+        js = "window.location.href = 'https://github.com/muarrikhyazka'"  # Current tab
+        html = '<img src onerror="{}">'.format(js)
+        div = Div(text=html)
+        st.bokeh_chart(div)
+
 
 
 
