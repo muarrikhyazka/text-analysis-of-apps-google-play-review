@@ -188,6 +188,5 @@ st.write("""
 
 c1, c2 = st.columns(2)
 with c1:
-    st.info('**Website: [muarrikhyazka.github.io](https://muarrikhyazka.github.io)**', icon="🍣")
-with c2:
-    st.info('**GitHub: [github.com/muarrikhyazka](https://github.com/muarrikhyazka)**', icon="🍱") 
+    st.info('**[Github Repo](https://github.com/muarrikhyazka/text-analysis-of-apps-google-play-review)**', icon="🍣")
+
