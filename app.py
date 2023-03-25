@@ -130,13 +130,6 @@ st.dataframe(df[['reviewId', 'userName', 'userImage', 'content', 'score',
        'repliedAt']].head())
 
 st.subheader('Method')
-st.write(
-    """
-    Sentiment Classification : Using pre-trained model from huggingface.co ([cardiffnlp/twitter-roberta-base-sentiment](https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment)) \n
-    Category Classification : Using pre-trained model from huggingface.co ([alperiox/autonlp-user-review-classification-536415182](https://huggingface.co/alperiox/autonlp-user-review-classification-536415182)) \n
-    """
-)
-
 st.write("""
     **Flowchart**
 """)
@@ -152,8 +145,112 @@ graph.edge('Sentiment Prediction', 'Analysis')
 st.graphviz_chart(graph)
 
 
+st.subheader('Text Preprocessing')
+st.write(
+    """
+    As usual, we need only the main meaning from the text, thats why we need to summarize by doing text preprocessing. Below the steps :
+    1. Convert to lowercase and clean punctuations, characters, and whitespaces
+    2. Tokenization
+        Split the text by word
+    3. Remove Stopwords
+        Stopword is meaningless word and not importance word such as 'and', 'or', 'which', etc. Thats why we dont need it and remove it. Here used stopwords from nltk library
+    4. Stemming
+        Remove -ing, -ly, etc. 
+    5. Lemmatisation
+        Convert the word into root word.
+    """
+)
 
-st.subheader('Insights')
+st.subheader('Sentiment and Category Prediction')
+st.write(
+    """
+    Sentiment Classification Prediction : Using pre-trained model from huggingface.co ([cardiffnlp/twitter-roberta-base-sentiment](https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment)) \n
+    Category Classification Prediction : Using pre-trained model from huggingface.co ([alperiox/autonlp-user-review-classification-536415182](https://huggingface.co/alperiox/autonlp-user-review-classification-536415182)) \n
+    """
+)
+
+def show_word_freq(df, text_column):
+    ## convert to corpus
+    top=10
+    corpus = df[text_column]
+    lst_tokens = nltk.tokenize.word_tokenize(corpus.str.cat(sep=" "))
+
+
+    fig, ax = plt.subplots(nrows=1, ncols=2)
+    fig.suptitle("Most frequent words", fontsize=15)
+    fig.set_size_inches(18.5, 10.5)
+        
+    ## calculate words unigrams
+    dic_words_freq = nltk.FreqDist(lst_tokens)
+    dtf_uni = pd.DataFrame(dic_words_freq.most_common(), 
+                        columns=["Word","Freq"])
+    dtf_uni.set_index("Word").iloc[:top,:].sort_values(by="Freq").plot(
+                    kind="barh", title="Unigrams", ax=ax[0], 
+                    legend=False).grid(axis='x')
+    ax[0].set(ylabel=None)
+        
+    ## calculate words bigrams
+    dic_words_freq = nltk.FreqDist(nltk.ngrams(lst_tokens, 2))
+    dtf_bi = pd.DataFrame(dic_words_freq.most_common(), 
+                        columns=["Word","Freq"])
+    dtf_bi["Word"] = dtf_bi["Word"].apply(lambda x: " ".join(
+                    string for string in x) )
+    dtf_bi.set_index("Word").iloc[:top,:].sort_values(by="Freq").plot(
+                    kind="barh", title="Bigrams", ax=ax[1],
+                    legend=False).grid(axis='x')
+    ax[1].set(ylabel=None)
+    plt.show()
+
+st.subheader('Analysis')
+
+## group by 'predicted_category', 'sentiment'
+df_grouped = df.groupby(['predicted_category', 'sentiment'])['reviewId'].count().reset_index()
+df_grouped.columns = ['predicted_category', 'sentiment', 'count']
+
+st.write(
+    """
+    1. Cross category and sentiment
+    """
+)
+df_grouped.pivot('predicted_category', 'sentiment', 'count').plot(kind='bar')
+st.pyplot(fig)
+
+st.write(
+    """
+    2. Count word unigram and bigram by sentiment
+    """
+)
+## show all chart each sentiment
+for i in idx_to_label_sentiments.values():
+    print(i)
+    show_word_freq(df[df['sentiment']==i], 'content_clean')
+st.pyplot(fig)
+
+st.write(
+    """
+    3. Count word unigram and bigram by category
+    """
+)
+## show all chart each category
+for j in idx_to_label.values():
+    print(j)
+    show_word_freq(df[df['predicted_category']==j], 'content_clean')
+st.pyplot(fig)
+
+st.write(
+    """
+    4. Count word unigram and bigram by category and sentiment
+    """
+)
+## show all chart combination between sentiment and category
+for i in idx_to_label_sentiments.values():
+    for j in idx_to_label.values():
+        print(i, 'and', j)
+        show_word_freq(df[(df['sentiment']==i)&(df['predicted_category']==j)], 'content_clean')
+st.pyplot(fig)
+    
+
+st.subheader('Insight')
 st.write(
     """
     I calculated word frequency and see on top 10 in unigram and bigram. Try to see all chart combination between sentiment and category and will show you which has insight.
