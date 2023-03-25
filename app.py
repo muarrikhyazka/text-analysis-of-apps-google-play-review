@@ -6,6 +6,9 @@ import plotly.express as px
 import nltk
 import graphviz
 import base64
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set()
 
 
 
@@ -150,14 +153,10 @@ st.write(
     """
     As usual, we need only the main meaning from the text, thats why we need to summarize by doing text preprocessing. Below the steps :
     1. Convert to lowercase and clean punctuations, characters, and whitespaces
-    2. Tokenization
-        Split the text by word
-    3. Remove Stopwords
-        Stopword is meaningless word and not importance word such as 'and', 'or', 'which', etc. Thats why we dont need it and remove it. Here used stopwords from nltk library
-    4. Stemming
-        Remove -ing, -ly, etc. 
-    5. Lemmatisation
-        Convert the word into root word.
+    2. Tokenization : Split the text by word
+    3. Remove Stopwords : Stopword is meaningless word and not importance word such as 'and', 'or', 'which', etc. Thats why we dont need it and remove it. Here used stopwords from nltk library
+    4. Stemming : Remove -ing, -ly, etc. 
+    5. Lemmatisation : Convert the word into root word.
     """
 )
 
@@ -199,9 +198,21 @@ def show_word_freq(df, text_column):
                     kind="barh", title="Bigrams", ax=ax[1],
                     legend=False).grid(axis='x')
     ax[1].set(ylabel=None)
-    plt.show()
+    return fig
 
 st.subheader('Analysis')
+## define label
+idx_to_label_sentiments = {
+    0: 'NEGATIVE',
+    1: 'NEUTRAL',
+    2: 'POSITIVE'
+}
+
+idx_to_label = {
+    0: 'CONTENT',
+    1: 'INTERFACE',
+    2: 'SUBSCRIPTION',
+    3: 'USER_EXPERIENCE'}
 
 ## group by 'predicted_category', 'sentiment'
 df_grouped = df.groupby(['predicted_category', 'sentiment'])['reviewId'].count().reset_index()
@@ -212,8 +223,9 @@ st.write(
     1. Cross category and sentiment
     """
 )
-df_grouped.pivot('predicted_category', 'sentiment', 'count').plot(kind='bar')
-st.pyplot(fig)
+
+plot_1 = df_grouped.pivot('predicted_category', 'sentiment', 'count').plot(kind='bar')
+st.pyplot(plot_1.figure)
 
 st.write(
     """
@@ -221,10 +233,11 @@ st.write(
     """
 )
 ## show all chart each sentiment
+fig, ax = plt.subplots()
 for i in idx_to_label_sentiments.values():
     print(i)
-    show_word_freq(df[df['sentiment']==i], 'content_clean')
-st.pyplot(fig)
+    plot_2 = show_word_freq(df[df['sentiment']==i], 'content_clean')
+st.pyplot(plot_2.figure)
 
 st.write(
     """
@@ -232,10 +245,11 @@ st.write(
     """
 )
 ## show all chart each category
+fig, ax = plt.subplots()
 for j in idx_to_label.values():
     print(j)
-    show_word_freq(df[df['predicted_category']==j], 'content_clean')
-st.pyplot(fig)
+    plot_3 = show_word_freq(df[df['predicted_category']==j], 'content_clean')
+st.pyplot(plot_3.figure)
 
 st.write(
     """
@@ -243,11 +257,12 @@ st.write(
     """
 )
 ## show all chart combination between sentiment and category
+fig, ax = plt.subplots()
 for i in idx_to_label_sentiments.values():
     for j in idx_to_label.values():
         print(i, 'and', j)
-        show_word_freq(df[(df['sentiment']==i)&(df['predicted_category']==j)], 'content_clean')
-st.pyplot(fig)
+        plot_4 = show_word_freq(df[(df['sentiment']==i)&(df['predicted_category']==j)], 'content_clean')
+st.pyplot(plot_4.figure)
     
 
 st.subheader('Insight')
