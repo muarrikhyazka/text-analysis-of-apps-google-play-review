@@ -11,14 +11,14 @@ import seaborn as sns
 sns.set()
 
 
-
+title = 'Text Analysis of Apps Google Play Review'
 
 
 
 
 # Layout
 img = Image.open('assets/icon_pink-01.png')
-st.set_page_config(page_title='Muarrikh Yazka', page_icon=img, layout='wide')
+st.set_page_config(page_title=title, page_icon=img, layout='wide')
 
 
 
@@ -98,7 +98,7 @@ with st.sidebar:
 
 
 
-st.title('Text Analysis of Apps Google Play Review')
+st.title(title)
 
 
 st.subheader('Business Understanding')
