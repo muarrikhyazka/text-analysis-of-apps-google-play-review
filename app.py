@@ -4,6 +4,7 @@ from PIL import Image
 from bokeh.models.widgets import Div
 import plotly.express as px
 import nltk
+nltk.download('punkt')
 import graphviz
 import base64
 import matplotlib.pyplot as plt
