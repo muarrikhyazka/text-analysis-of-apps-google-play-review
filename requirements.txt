@@ -1,0 +1,9 @@
+pandas
+streamlit
+PIL
+bokeh
+nltk
+graphviz
+base64
+matplotlib
+seaborn
