@@ -4,6 +4,6 @@ Pillow
 bokeh
 nltk
 graphviz
-base64
+pybase64
 matplotlib
 seaborn
