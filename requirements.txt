@@ -1,6 +1,6 @@
 pandas
 streamlit
-PIL
+Pillow
 bokeh
 nltk
 graphviz
