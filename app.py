@@ -83,13 +83,15 @@ with st.sidebar:
     st.write('\n')
 
     if st.button('🏠 HOME'):
-        js = "window.location.href = 'https://muarrikhyazka.github.io'"  # Current tab
+        # js = "window.location.href = 'http://www.muarrikhyazka.com'"  # Current tab
+        js = "window.open('http://www.muarrikhyazka.com')"
         html = '<img src onerror="{}">'.format(js)
         div = Div(text=html)
         st.bokeh_chart(div)
 
     if st.button('🍱 GITHUB'):
-        js = "window.location.href = 'https://github.com/muarrikhyazka'"  # Current tab
+        # js = "window.location.href = 'https://www.github.com/muarrikhyazka'"  # Current tab
+        js = "window.open('https://www.github.com/muarrikhyazka')"
         html = '<img src onerror="{}">'.format(js)
         div = Div(text=html)
         st.bokeh_chart(div)
