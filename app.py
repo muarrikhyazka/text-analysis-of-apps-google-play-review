@@ -105,6 +105,13 @@ with st.sidebar:
 
 st.title(title)
 
+st.write(
+    """
+    \n
+    \n
+    \n
+    """
+)
 
 st.subheader('Business Understanding')
 st.write(
@@ -117,6 +124,14 @@ st.write(
 st.write(
     """
     I choose Netflix as the case because I have already known how is the bussiness and I am a user of Netflix.
+    """
+)
+
+st.write(
+    """
+    \n
+    \n
+    \n
     """
 )
 
@@ -137,6 +152,14 @@ st.dataframe(df[['reviewId', 'userName', 'userImage', 'content', 'score',
        'thumbsUpCount', 'reviewCreatedVersion', 'at', 'replyContent',
        'repliedAt']].head())
 
+st.write(
+    """
+    \n
+    \n
+    \n
+    """
+)
+
 st.subheader('Method')
 st.write("""
     **Flowchart**
@@ -152,6 +175,13 @@ graph.edge('Sentiment Prediction', 'Analysis')
 
 st.graphviz_chart(graph)
 
+st.write(
+    """
+    \n
+    \n
+    \n
+    """
+)
 
 st.subheader('Text Preprocessing')
 st.write(
@@ -162,6 +192,14 @@ st.write(
     3. Remove Stopwords : Stopword is meaningless word and not importance word such as 'and', 'or', 'which', etc. Thats why we dont need it and remove it. Here used stopwords from nltk library
     4. Stemming : Remove -ing, -ly, etc. 
     5. Lemmatisation : Convert the word into root word.
+    """
+)
+
+st.write(
+    """
+    \n
+    \n
+    \n
     """
 )
 
@@ -204,6 +242,14 @@ def show_word_freq(df, text_column):
                     legend=False).grid(axis='x')
     ax[1].set(ylabel=None)
     return fig
+
+st.write(
+    """
+    \n
+    \n
+    \n
+    """
+)
 
 st.subheader('Analysis')
 ## define label
@@ -269,6 +315,13 @@ for i in idx_to_label_sentiments.values():
         plot_4 = show_word_freq(df[(df['sentiment']==i)&(df['predicted_category']==j)], 'content_clean')
 st.pyplot(plot_4.figure)
     
+st.write(
+    """
+    \n
+    \n
+    \n
+    """
+)
 
 st.subheader('Insight')
 st.write(
@@ -302,6 +355,14 @@ st.write("""
     It indicates that Netflix should prioritize to improve their app in TV. 
     Furthermore, in detail many complaints for voice search feature, so It should be attention to start.
 """)
+
+st.write(
+    """
+    \n
+    \n
+    \n
+    """
+)
 
 c1, c2 = st.columns(2)
 with c1:
